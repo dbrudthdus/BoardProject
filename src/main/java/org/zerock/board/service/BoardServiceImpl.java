@@ -16,8 +16,6 @@ public class BoardServiceImpl implements BoardService {
 
 	private final BoardMapper boardMapper;
 
-	
-
 	// 목록
 	@Override
 	public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO) {

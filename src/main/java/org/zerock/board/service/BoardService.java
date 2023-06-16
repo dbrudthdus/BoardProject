@@ -10,10 +10,8 @@ import org.zerock.board.dto.PageResponseDTO;
 @Transactional
 public interface BoardService {
 	
-
 	// 목록
 	public PageResponseDTO<BoardDTO> getList(PageRequestDTO pageRequestDTO);
-
 
 	// 수정
 	public int modifyService(BoardDTO boardDTO);

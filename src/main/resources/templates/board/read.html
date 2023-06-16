@@ -13,34 +13,44 @@
 		<!-- Form Start -->
 		<div class="container-fluid pt-4 px-4">
 			<div class="row g-4">
-					<div class="col-sm-12 col-xl-12">
-						<div class="bg-light rounded h-100 p-4">
-							<h4 class="mb-4">조회</h4>
-							<form method="post" th:action="@{/board/delete/} + ${read.bno}">
-								<input type="hidden" th:value="${read.bno}">
-								<h6 class="mb-4">Title</h6>
-								<div class="alert alert-light" role="alert">
-									[[${read.title}]]
-								</div>
-								<h6 class="mb-4">Content</h6>
-								<div class="alert alert-light" role="alert">
-									[[${read.content}]]
-								</div>
-								<h6 class="mb-4">Writer</h6>
-								<div class="alert alert-light" role="alert">
-									[[${read.writer}]]
-								</div>
-								<div class="button_wrap">
-									<a th:href="@{/board/modify/{bno}(bno=${read.bno})}" class="btn btn-primary modal-btn">수정</a>
-									<button type="submit" class="btn btn-primary btnModify">삭제</button>
-								</div>
-							</form>
+				<div class="col-sm-12 col-xl-12">
+					<div class="bg-light rounded h-100 p-4">
+						<h4 class="mb-4">조회</h4>
+						<form method="post" th:action="@{/board/delete/} + ${read.bno}">
+							<input type="hidden" th:value="${read.bno}">
+							<h6 class="mb-4">Title</h6>
+							<div class="alert alert-light" role="alert">
+								[[${read.title}]]
+							</div>
+							<h6 class="mb-4">Content</h6>
+							<div class="alert alert-light" role="alert">
+								[[${read.content}]]
+							</div>
+							<h6 class="mb-4">Writer</h6>
+							<div class="alert alert-light" role="alert">
+								[[${read.writer}]]
+							</div>
+							<div class="button_wrap">
+								<a th:href="@{/board/modify/{bno}(bno=${read.bno})}" class="btn btn-primary rounded-pill modal-btn">수정</a>
+								<span style="margin:0 5px;"></span>
+								<button type="submit" class="btn btn-danger rounded-pill btnModify">삭제</button>
+							</div>
+						</form>
+						<div class="mb-3">
+							<label for="replyInput" class="form-label text-dark h6" style="display:block;margin:15px 0 20px;">댓글</label>
+							<input type="text" class="form-control" name="reply" id="replyInput" style="display:inline-block;width:calc(100%/2 - 35px);" placeholder="댓글내용">
+							<input type="text" class="form-control" name="replyer" id="replyInput" style="display:inline-block;width:calc(100%/2 - 35px);" placeholder="작성자">
+							<button type="button" class="btn btn-primary btnReply">등록</button>
 						</div>
+						<ul class="replyList">
+							<!--/* <li class="p-2 mb-2 bg-secondary text-white">.bg-secondary</li> */-->
+						</ul>
 					</div>
 				</div>
+			</div>
 		</div>
 		<!-- Form End -->
-		<!--/* <div class="modal modifyModal" tabindex="-1" role="dialog">
+		<div class="modal modifyModal" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<form method="post" action="@{/board/modify/{bno}(bno=${read.bno})}">
@@ -79,17 +89,63 @@
 					</form>
 				</div>
 			</div>
-		</div> */-->
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</div>
 
 	<script layout:fragment="script" th:inline="javascript">
 		// const modifyModal = new bootstrap.Modal(document.querySelector(".modifyModal"));
 		// const modalBtn = document.querySelector('.modal-btn');
+		
+		// 리스트 선택자
+		const replyList = document.querySelector('.replyList');
+		
+		const replyBtn = document.querySelector('.btnReply');
+		const {bno} = [[${read}]]
+
 
 		// modalBtn.addEventListener("click", e => {
 		// 	modifyModal.show();
 		// 	//alert('a');
 		// }, false);
+
+		const getList = async () => {
+
+			const res = await axios.get(`http://localhost:8080/replies/${bno}/list`)
+
+			//console.log(res);
+			return res.data 
+		}
+
+		function getReplyList(){
+			getList().then(arr => {
+				let str = ""
+				//console.log(arr.length)
+				for(let i = 0; i < arr.length; i++) {
+					const {rno, reply, replyer, dueDate} = arr[i] 
+					str += `<li class="p-2 mb-2 bg-secondary text-white" data-id=${rno}>${reply}</li>`
+				}
+				//console.log(str)
+				replyList.innerHTML = str
+			})
+		}	getReplyList()
+
+		const postReigst = async (reply) => {
+			const res = await axios.post(`http://localhost:8080/replies/${bno}/new`,reply)
+			return 	res.data
+		}
+
+		replyBtn.addEventListener("click", e => {
+			const replyVal = document.querySelector("input[name=reply]").value
+			const replyerVal = document.querySelector("input[name=replyer]").value
+
+			const temp = {reply: replyVal, replyer: replyerVal}
+
+			postReigst(temp).then(result => {
+				console.log(result);
+			})
+
+		}, false)
 		
 	</script>
 </body>

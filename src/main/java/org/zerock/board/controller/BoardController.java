@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.zerock.board.dto.BoardDTO;
+import org.zerock.board.dto.PageRequestDTO;
+import org.zerock.board.dto.PageResponseDTO;
 import org.zerock.board.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,11 @@ public class BoardController {
 
 	// 목록
 	@GetMapping("list")
-	public void list(Model model){
+	public void list(PageRequestDTO pageRequestDTO, Model model){
 
 		log.info("list......");
 
-		List<BoardDTO> list = boardService.getList();
+		PageResponseDTO<BoardDTO> list = boardService.getList(pageRequestDTO);
 
 		model.addAttribute("board", list);
 		

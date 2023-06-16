@@ -11,9 +11,9 @@
 	
 	<div layout:fragment="content">
 
-		<!--/* [[${board}]] */-->
 		<!--/* thymeleaf로 사용할 땐 el태그, 그 외엔 [[${}]] 형식 사용*/-->
 		<!-- Table Start -->
+		<!--/* [[${board}]] */-->
 		<div class="container-fluid pt-4 px-4">
 			<div class="row g-4">
 					<div class="col-sm-12 col-xl-12">
@@ -29,7 +29,7 @@
 													</tr>
 											</thead>
 											<tbody class="readView">
-													<tr th:each="blist : ${board}" th:data-bno=${blist.bno}>
+													<tr th:each="blist : ${board.list}" th:data-bno=${blist.bno}>
 															<td>[[${blist.bno}]]</td>
 															<td th:text="${blist.title}"></td>
 															<td>[[${blist.writer}]]</td>
@@ -54,7 +54,7 @@
 	</div>
 
 
-	<script layout:fragment="script" th:inlint="javascript">
+	<script layout:fragment="script" th:inline="javascript">
 
 		const readView = document.querySelector(".readView");
 		
